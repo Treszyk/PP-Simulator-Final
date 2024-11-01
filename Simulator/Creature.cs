@@ -4,29 +4,18 @@ public abstract class Creature
 {
     private string _name = "Unknown";
     private int _level = 1;
-    public string Name { 
-        get {  return _name; }
-        init
-        {
-            //Console.WriteLine(value.Length);
-            _name = value.Trim();
-            if (_name.Length > 25)
-                _name = _name.Remove(25).Trim();     
-            if (_name.Length < 3)
-                _name = _name.PadRight(3, '#');
-            if (char.IsLower(_name[0]))
-                _name = char.ToUpper(_name[0]) + _name.Substring(1);
-        }
+    public string Name
+    {
+        get { return _name; }
+        init => _name = Validator.Shortener(value, 3, 25, '#');
     }
     public abstract int Power { get; }
-    public int Level {
+    public int Level
+    {
         get { return _level; }
-        init
-        {
-            _level = Math.Clamp(value, 1, 10);
-        } 
+        init => _level = Validator.Limiter(value, 1, 10);
     }
-    public string Info => $"{Name} [{Level}]";
+    public abstract string Info { get; }
     public Creature()
     {
         
@@ -48,4 +37,5 @@ public abstract class Creature
     {
         Go(DirectionParser.Parse(input));
     }
+    public override string ToString() => $"{this.GetType().Name.ToUpper()}: {Info}";
 }

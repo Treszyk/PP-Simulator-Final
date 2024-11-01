@@ -7,9 +7,10 @@ public class Orc : Creature
     public int Rage
     {
         get => _rage;
-        init => _rage = Math.Clamp(value, 0, 10);
+        init => _rage = Validator.Limiter(value, 0, 10);
     }
     public override int Power => 7 * Level + 3 * Rage;
+    public override string Info => $"{Name} [{Level}][{Rage}]";
     public Orc() { }
     public Orc(string name = "Unknown", int level = 1, int rage = 1) : base(name, level)
     {
