@@ -1,6 +1,6 @@
 ﻿namespace Simulator;
 
-public class Creature
+public abstract class Creature
 {
     private string _name = "Unknown";
     private int _level = 1;
@@ -18,6 +18,7 @@ public class Creature
                 _name = char.ToUpper(_name[0]) + _name.Substring(1);
         }
     }
+    public abstract int Power { get; }
     public int Level {
         get { return _level; }
         init
@@ -35,7 +36,7 @@ public class Creature
         Name = name;
         Level = level;
     }
-    public void SayHi() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}.");
+    public abstract void SayHi();
     public void Upgrade() => _level = _level < 10 ? _level+1 : _level;
     public void Go(Direction direction) => Console.WriteLine($"{Name} goes {direction.ToString().ToLower()}");
     public void Go(Direction[] directions)
