@@ -1,4 +1,6 @@
-﻿namespace Simulator;
+﻿using Simulator.Maps;
+
+namespace Simulator;
 
 internal class Program
 {
@@ -50,11 +52,53 @@ internal class Program
         Console.WriteLine($"NextDiagonal (Left): {start.NextDiagonal(Direction.Left)}");     // Oczekiwane: (9, 26)
         Console.WriteLine($"NextDiagonal (Down): {start.NextDiagonal(Direction.Down)}");     // Oczekiwane: (9, 24)
     }
+    static void Lab5b()
+    {
+        Console.WriteLine("Testowanie klasy SmallSquareMap:");
 
+        // Test 1: Tworzenie mapy z poprawnym rozmiarem
+        SmallSquareMap map = new SmallSquareMap(10);
+        Console.WriteLine($"Mapa o rozmiarze: {map.Size}"); // Oczekiwane: 10
+
+        // Test 2: Próba stworzenia mapy z niepoprawnym rozmiarem
+        try
+        {
+            SmallSquareMap invalidMap = new SmallSquareMap(25);
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            Console.WriteLine($"Złapano wyjątek: {ex.Message}"); // Oczekiwane: błąd o niepoprawnym rozmiarze
+        }
+
+        // Test 3: Sprawdzanie, czy punkt istnieje na mapie
+        Point insidePoint = new Point(5, 5);
+        Point outsidePoint = new Point(15, 5);
+        Console.WriteLine($"Czy punkt (5, 5) istnieje na mapie: {map.Exist(insidePoint)}"); // Oczekiwane: true
+        Console.WriteLine($"Czy punkt (15, 5) istnieje na mapie: {map.Exist(outsidePoint)}"); // Oczekiwane: false
+
+        // Test 4: Poruszanie się po mapie w różnych kierunkach
+        Point start = new Point(0, 0);
+
+        // Próba ruchu poza granice
+        Console.WriteLine($"Next (Left) z (0,0): {map.Next(start, Direction.Left)}");   // Oczekiwane: (0, 0)
+        Console.WriteLine($"Next (Down) z (0,0): {map.Next(start, Direction.Down)}");   // Oczekiwane: (0, 0)
+
+        // Próba ruchu wewnątrz granic
+        Console.WriteLine($"Next (Right) z (0,0): {map.Next(start, Direction.Right)}"); // Oczekiwane: (1, 0)
+        Console.WriteLine($"Next (Up) z (0,0): {map.Next(start, Direction.Up)}");       // Oczekiwane: (0, 1)
+
+        // Próba ruchu diagonalnego
+        Point nearBorder = new Point(9, 9);
+        Console.WriteLine($"NextDiagonal (Up) z (9,9): {map.NextDiagonal(nearBorder, Direction.Up)}");    // Oczekiwane: (9, 9) - poza granicą
+        Console.WriteLine($"NextDiagonal (Left) z (0,0): {map.NextDiagonal(start, Direction.Left)}");     // Oczekiwane: (0, 0) - poza granicą
+        Console.WriteLine($"NextDiagonal (Up) z (0,0): {map.NextDiagonal(start, Direction.Up)}");     // Oczekiwane: (1, 1) - w granicy
+        Console.WriteLine($"NextDiagonal (Down) z (9,9): {map.NextDiagonal(nearBorder, Direction.Down)}");    // Oczekiwane: (8, 8) - w granicy
+    }
     static void Main(string[] args)
     {
         Console.WriteLine("Starting Simulator!\n");
         Lab5a();
+        Console.Write("\n\n");
+        Lab5b();
     }
-
 }
