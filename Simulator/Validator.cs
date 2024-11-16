@@ -13,9 +13,9 @@ public static class Validator
     {
         value = value.Trim();
         if (value.Length > max)
-            value = value.Remove(25).Trim();
+            value = value.Remove(max).Trim();
         if (value.Length < min)
-            value = value.PadRight(3, placeholder);
+            value = value.PadRight(min, placeholder);
         if (char.IsLower(value[0]))
             value = char.ToUpper(value[0]) + value.Substring(1);
         return value;
