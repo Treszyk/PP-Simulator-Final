@@ -57,13 +57,13 @@ internal class Program
         Console.WriteLine("Testowanie klasy SmallSquareMap:");
 
         // Test 1: Tworzenie mapy z poprawnym rozmiarem
-        SmallSquareMap map = new SmallSquareMap(10);
+        SmallSquareMap map = new SmallSquareMap(10, 10);
         Console.WriteLine($"Mapa o rozmiarze: {map.Size}"); // Oczekiwane: 10
 
         // Test 2: Próba stworzenia mapy z niepoprawnym rozmiarem
         try
         {
-            SmallSquareMap invalidMap = new SmallSquareMap(25);
+            SmallSquareMap invalidMap = new SmallSquareMap(25, 25);
         }
         catch (ArgumentOutOfRangeException ex)
         {

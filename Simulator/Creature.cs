@@ -28,9 +28,9 @@ public abstract class Creature
     public abstract string Greeting();
     public void Upgrade() => _level = _level < 10 ? _level+1 : _level;
     public string Go(Direction direction) => $"{Name} goes {direction.ToString().ToLower()}";
-    public string[] Go(Direction[] directions)
+    public string[] Go(List<Direction> directions)
     {
-        string[] res = new string[directions.Length];
+        string[] res = new string[directions.Count];
         int i = 0;
         foreach (Direction direction in directions)
             res[i++] = Go(direction);

@@ -13,10 +13,11 @@ public class SmallSquareMapTests
         int size = 10;
 
         // Act
-        var map = new SmallSquareMap(size);
+        var map = new SmallSquareMap(size, size);
 
         // Assert
-        Assert.Equal(size, map.Size);
+        Assert.Equal(size, map.SizeX);
+        Assert.Equal(size, map.SizeY);
     }
 
     // Test dla konstruktorów mapy - niepoprawne rozmiary mapy
@@ -27,7 +28,7 @@ public class SmallSquareMapTests
     {
         // Act & Assert
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            new SmallSquareMap(size));
+            new SmallSquareMap(size, size));
     }
 
     // Testy dla metody Exist
@@ -39,7 +40,7 @@ public class SmallSquareMapTests
     public void Exist_ShouldReturnCorrectValue(int x, int y, int size, bool expected)
     {
         // Arrange
-        var map = new SmallSquareMap(size);
+        var map = new SmallSquareMap(size, size);
         var point = new Point(x, y);
 
         // Act
@@ -58,7 +59,7 @@ public class SmallSquareMapTests
     public void Next_ShouldReturnCorrectNextPoint(int x, int y, Direction direction, int expectedX, int expectedY)
     {
         // Arrange
-        var map = new SmallSquareMap(20); // Zmieniamy na mapę 20x20
+        var map = new SmallSquareMap(20, 20); // Zmieniamy na mapę 20x20
         var point = new Point(x, y);
 
         // Act
@@ -77,7 +78,7 @@ public class SmallSquareMapTests
     public void NextDiagonal_ShouldReturnCorrectNextPoint(int x, int y, Direction direction, int expectedX, int expectedY)
     {
         // Arrange
-        var map = new SmallSquareMap(20); // Zmieniamy na mapę 20x20
+        var map = new SmallSquareMap(20, 20); // Zmieniamy na mapę 20x20
         var point = new Point(x, y);
 
         // Act

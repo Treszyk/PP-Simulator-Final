@@ -1,10 +1,23 @@
-﻿namespace Simulator.Maps;
+﻿using System.Drawing;
+
+namespace Simulator.Maps;
 
 /// <summary>
 /// Map of points.
 /// </summary>
 public abstract class Map
 {
+    public int SizeX { get; }
+    public int SizeY { get; }
+    protected Rectangle _mapRect;
+    public Map(int sizeX, int sizeY)
+    {
+        if (sizeX < 5 || sizeY < 5)
+            throw new ArgumentOutOfRangeException($"Wymiary mapy muszą być co najmniej 5x5. Twoje wymiary: {sizeX}x{sizeY}");
+        SizeX = sizeX;
+        SizeY = sizeY;
+        _mapRect = new(new Point(0, 0), new Point(SizeX - 1, SizeY - 1));
+    }
     /// <summary>
     /// Check if give point belongs to the map.
     /// </summary>
