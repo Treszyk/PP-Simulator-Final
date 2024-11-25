@@ -97,9 +97,6 @@ internal class Program
     static void Main(string[] args)
     {
         Console.WriteLine("Starting Simulator!\n");
-        Console.WriteLine("Lab5a:");
-        Lab5a();
-        Console.WriteLine("\nLab5b:");
-        Lab5b();
+
     }
 }
