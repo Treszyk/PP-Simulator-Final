@@ -44,7 +44,7 @@ public abstract class Creature
         Map = map;
         Position = position;
         Map.Add(this, position);
-       //Console.WriteLine("map assigned");
+        //Console.WriteLine("map assigned");
     }
     public abstract string Greeting();
     public void Upgrade() => _level = _level < 10 ? _level + 1 : _level;
