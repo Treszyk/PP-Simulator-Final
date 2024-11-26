@@ -63,7 +63,18 @@ public class Simulation
         Map = map;
         Creatures = creatures;
         Positions = positions;
-        Moves = string.Join("", DirectionParser.Parse(moves));
+        Moves = "";
+        foreach(var direction in DirectionParser.Parse(moves))
+        {
+            Moves += direction switch
+            {
+                Direction.Up => "u",
+                Direction.Right => "r",
+                Direction.Down => "d",
+                Direction.Left => "l",
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
 
         for (int i = 0; i < creatures.Count; i++)
         {
@@ -84,16 +95,28 @@ public class Simulation
 
         var currentMove = CurrentMoveName;
         var direction = DirectionParser.Parse(currentMove);
-
-        if (direction != null)
+        //Console.WriteLine($"{direction.Count} {Moves} {CurrentMoveName}");
+        if (direction != null && direction.Count > 0)
         {
+            
             var currentCreature = CurrentCreature;
             var from = currentCreature.Position;
             var to = Map.Next(from, direction[0]);
+            var direction_name = direction[0] switch
+            {
+                Direction.Up => "up",
+                Direction.Right => "right",
+                Direction.Down => "down",
+                Direction.Left => "left",
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+            Console.WriteLine($"\nTurn {_currentTurnIndex + 1}");
+            Console.WriteLine($"{CurrentCreature} {CurrentCreature.Position} goes {direction_name}");
 
             Map.Move(currentCreature, from, to);
             currentCreature.Position = to;
         }
+        
 
         _currentTurnIndex++;
 

@@ -35,6 +35,7 @@ public abstract class SmallMap : Map
     }
     public override void Move(Creature creature, Point from, Point to)
     {
+        Console.WriteLine($"{Exist(to)} {to}");
         if (!Exist(to))
             throw new ArgumentException($"Docelowa pozycja spoza zakresu mapy {to}");
         //Console.WriteLine(_creaturePositions.ContainsKey(new Point(3, 4)));
