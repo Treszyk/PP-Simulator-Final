@@ -9,15 +9,16 @@ class Program
     static void Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
-        SmallSquareMap map = new(5, 5);
-        List<IMappable> mappables = [new Orc("Gorbag"), new Elf("Elandor")];
-        List<Point> points = [new(2, 2), new(3, 1)];
-        string moves = "dlrludl";
+        SmallTorusMap map = new(5, 5);
+        List<IMappable> mappables = [new Orc("Gorbag"), new Elf("Elandor"), new Animals() { Description = "Króliki"}, new Birds() { Description = "Orły", CanFly = true}, new Birds() { Description = "Strusie", CanFly = false }];
+        List<Point> points = [new(0, 0), new(4, 4), new(1, 1), new(3, 3), new(3, 4)];
+        string moves = "ddulurluddlpludr";
 
         Simulation simulation = new(map, mappables, points, moves);
         MapVisualizer mapVisualizer = new(simulation.Map);
         Console.WriteLine("SIMULATION!");
         Console.WriteLine("\nStarting positions:");
+
         while (!simulation.Finished)
         {
             mapVisualizer.Draw();
@@ -25,6 +26,7 @@ class Program
             Console.ReadKey();
             simulation.Turn();
         }
+
         mapVisualizer.Draw();
         Console.WriteLine("End of simulation!");
     }

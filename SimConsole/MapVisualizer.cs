@@ -21,6 +21,7 @@ public class MapVisualizer
         int height = _map.SizeY;
 
         Console.Write(Box.TopLeft);
+
         for (int x = 0; x < width; x++)
         {
             Console.Write($"{Box.Horizontal}{(x < width - 1 ? Box.TopMid : "")}");
@@ -37,7 +38,7 @@ public class MapVisualizer
                 char displayChar = mappables.Count switch
                 {
                     0 => ' ',
-                    1 => mappables[0] is Orc ? 'O' : 'E',
+                    1 => mappables[0].Symbol,
                     _ => 'X'
                 };
                 Console.Write($"{displayChar}{Box.Vertical}");

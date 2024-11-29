@@ -13,7 +13,6 @@ public class Simulation
     public bool Finished = false;
     public IMappable CurrentMappable => Mappables[_currentTurnIndex % Mappables.Count];
     public string CurrentMoveName => _directions[_currentTurnIndex % _directions.Count].ToString().ToLower();
-
     public Simulation(Map map, List<IMappable> mappables,
         List<Point> positions, string moves)
     {
@@ -22,6 +21,9 @@ public class Simulation
 
         if (mappables.Count != positions.Count)
             throw new ArgumentException("Number of mappables must match the number of starting positions.");
+
+        if (moves.Length == 0)
+            Finished = true;
 
         Moves = moves;
         Map = map;
@@ -35,20 +37,14 @@ public class Simulation
             mappables[i].InitMapAndPosition(map, positions[i]);
         }
     }
-
     public void Turn() 
     {
         if (Finished)
             throw new InvalidOperationException("Simulation is finished.");
 
-        var currentMove = CurrentMoveName;
-        var direction = DirectionParser.Parse(currentMove);
-        if (direction != null && direction.Count > 0)
-        {
-            Console.WriteLine($"\nTurn {_currentTurnIndex + 1}");
-            Console.WriteLine($"{CurrentMappable} {CurrentMappable.Position} goes {CurrentMoveName}:");
-            CurrentMappable.Go(_directions[_currentTurnIndex % _directions.Count]);
-        }
+        Console.WriteLine($"\nTurn {_currentTurnIndex + 1}");
+        Console.WriteLine($"{CurrentMappable} {CurrentMappable.Position} goes {CurrentMoveName}:");
+        CurrentMappable.Go(_directions[_currentTurnIndex % _directions.Count]);
         
         _currentTurnIndex++;
 
