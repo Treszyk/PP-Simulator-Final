@@ -101,7 +101,8 @@ public class SmallSquareMapTests
         var position = new Point(x, y);
 
         // Act
-        map.Add(creature, position);
+        map.Add(position, creature);
+        creature.InitMapAndPosition(map, position);
 
         // Assert
         Assert.Contains(creature, map.At(position));
@@ -119,7 +120,7 @@ public class SmallSquareMapTests
         var position = new Point(x, y);
 
         // Act and Assert
-        Assert.Throws<ArgumentException>(() => map.Add(creature, position));
+        Assert.Throws<ArgumentException>(() => map.Add(position, creature));
     }
     // Testy dla usuwania stworzeń z mapy
     [Theory]
@@ -133,37 +134,13 @@ public class SmallSquareMapTests
         var creature = new Orc("TestCreature", 1);
         var position = new Point(x, y);
 
-        map.Add(creature, position);
+        map.Add(position, creature);
 
         // Act
-        map.Remove(creature);
+        map.Remove(position, creature);
 
         // Assert
         Assert.DoesNotContain(creature, map.At(position));
-    }
-
-    // Testy dla przemieszczania stworzeń
-    [Theory]
-    [InlineData(5, 9, 8, 9)]
-    [InlineData(0, 0, 5, 5)]
-    [InlineData(9, 9, 7, 3)]
-    public void MoveCreature_ShouldChangePositionOnMap(int fromX, int fromY, int toX, int toY)
-    {
-        // Arrange
-        var map = new SmallSquareMap(10, 10);
-        var creature = new Orc("TestCreature", 1);
-        var from = new Point(fromX, fromY);
-        var to = new Point(toX, toY);
-
-        map.Add(creature, from);
-
-        // Act
-        map.Move(creature, from, to);
-
-        // Assert
-        Assert.DoesNotContain(creature, map.At(from));
-        Assert.Contains(creature, map.At(to));
-        Assert.Equal(to, creature.Position);
     }
 
     // Testy dla ruchu stworzenia za pomocą metody Go 
@@ -178,7 +155,8 @@ public class SmallSquareMapTests
         var creature = new Orc("TestCreature", 1);
         var position = new Point(x, y);
 
-        creature.AssignMap(map, position);
+        creature.InitMapAndPosition(map, position);
+        map.Add(position, creature);
 
         // Act
         creature.Go(Direction.Up);

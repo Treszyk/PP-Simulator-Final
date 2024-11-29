@@ -33,11 +33,11 @@ public class MapVisualizer
             Console.Write(Box.Vertical);
             for (int x = 0; x < width; x++)
             {
-                var creatures = _map.At(new Point(x, y));
-                char displayChar = creatures.Count switch
+                var mappables = _map.At(new Point(x, y));
+                char displayChar = mappables.Count switch
                 {
                     0 => ' ',
-                    1 => creatures[0] is Orc ? 'O' : 'E',
+                    1 => mappables[0] is Orc ? 'O' : 'E',
                     _ => 'X'
                 };
                 Console.Write($"{displayChar}{Box.Vertical}");

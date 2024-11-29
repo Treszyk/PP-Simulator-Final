@@ -2,58 +2,55 @@
 
 public abstract class SmallMap : Map
 {
-    private readonly Dictionary<Point, List<Creature>> _creaturePositions;
+    private readonly Dictionary<Point, List<IMappable>> _mappablePositions;
     public SmallMap(int sizeX, int sizeY) : base(sizeX, sizeY)
     {
         if (sizeX > 20 || sizeY > 20)
             throw new ArgumentOutOfRangeException("Wymiary mapy nie mogą przekraczać 20x20. Twoje wymiary: {sizeX}x{sizeY}");
-        _creaturePositions = new Dictionary<Point, List<Creature>>();
+        _mappablePositions = new Dictionary<Point, List<IMappable>>();
     }
 
-    public override void Add(Creature creature, Point position)
+    public override void Add(Point position, IMappable mappable)
     {
         if (!Exist(position))
             throw new ArgumentException($"Pozycja spoza zakresu mapy {position}");
 
-        if (!_creaturePositions.ContainsKey(position))
-            _creaturePositions[position] = [];
+        if (!_mappablePositions.ContainsKey(position))
+            _mappablePositions[position] = [];
 
-        _creaturePositions[position].Add(creature);
-        creature.Position = position;
-        //Console.WriteLine($"Creature added: {_creaturePositions[position]}");
+        _mappablePositions[position].Add(mappable);
     }
 
-    public override void Remove(Creature creature)
+    public override void Remove(Point point, IMappable mappable)
     {
-        if (!_creaturePositions.ContainsKey(creature.Position))
+        if (!_mappablePositions.ContainsKey(point))
             return;
 
-        _creaturePositions[creature.Position].Remove(creature);
+        _mappablePositions[point].Remove(mappable);
 
-        if (_creaturePositions[creature.Position].Count == 0)
-            _creaturePositions.Remove(creature.Position);
+        if (_mappablePositions[point].Count == 0)
+            _mappablePositions.Remove(point);
     }
-    public override void Move(Creature creature, Point from, Point to)
+    public override void Move(IMappable mappable, Point from, Point to, Direction direction)
     {
-        Console.WriteLine($"{Exist(to)} {to}");
         if (!Exist(to))
             throw new ArgumentException($"Docelowa pozycja spoza zakresu mapy {to}");
-        //Console.WriteLine(_creaturePositions.ContainsKey(new Point(3, 4)));
-        //Console.WriteLine($"Moving from {from}");
-        if (!_creaturePositions.ContainsKey(from))
+
+        if (!_mappablePositions.ContainsKey(from))
             return;
-        //Console.WriteLine(_creaturePositions[from]);
-        if (_creaturePositions[from].Remove(creature))
-            Add(creature, to);
-        //Console.WriteLine(_creaturePositions[from]);
+        if (_mappablePositions[from].Remove(mappable))
+        {
+            Add(to, mappable);
+        }
+            
     }
-    public override List<Creature> At(Point position)
+    public override List<IMappable> At(Point position)
     {
-        if (_creaturePositions.TryGetValue(position, out var creatures))
-            return creatures;
+        if (_mappablePositions.TryGetValue(position, out var mappables))
+            return mappables;
 
         return [];
     }
-    public override List<Creature> At(int x, int y) => At(new Point(x, y));
+    public override List<IMappable> At(int x, int y) => At(new Point(x, y));
 
 }

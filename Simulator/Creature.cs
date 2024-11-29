@@ -2,7 +2,7 @@
 
 namespace Simulator;
 
-public abstract class Creature
+public abstract class Creature : IMappable
 {
     private string _name = "Unknown";
     private int _level = 1;
@@ -22,8 +22,8 @@ public abstract class Creature
     public abstract int Power { get; }
     public abstract string Info { get; }
 
-    public Point Position { get; internal set; }
     public Map? Map { get; private set; }
+    public Point Position { get; private set; }
 
     public Creature() { }
 
@@ -33,7 +33,7 @@ public abstract class Creature
         Level = level;
     }
 
-    public void AssignMap(Map map, Point position)
+    public void InitMapAndPosition(Map map, Point position)
     {
         if (!map.Exist(position))
             throw new ArgumentException("Pozycja spoza zakresu mapy.", nameof(position));
@@ -43,7 +43,6 @@ public abstract class Creature
 
         Map = map;
         Position = position;
-        Map.Add(this, position);
         //Console.WriteLine("map assigned");
     }
     public abstract string Greeting();
@@ -54,9 +53,8 @@ public abstract class Creature
             throw new InvalidOperationException("Stwór nie jest przypisany do mapy.");
 
         Point newPosition = Map.Next(Position, direction);
-        Map.Move(this, Position, newPosition);
+        Map.Move(this, Position, newPosition, direction);
         Position = newPosition;
-        //Console.WriteLine("Creature moved");
     }
 
     public override string ToString() => $"{this.GetType().Name.ToUpper()}: {Info}";
