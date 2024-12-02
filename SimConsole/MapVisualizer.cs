@@ -1,6 +1,4 @@
-﻿using Simulator;
-using Simulator.Maps;
-using System.Drawing;
+﻿using Simulator.Maps;
 using System.Text;
 
 namespace Simulator;
@@ -15,23 +13,24 @@ public class MapVisualizer
         Console.OutputEncoding = Encoding.UTF8;
     }
 
-    public void Draw()
+    public string Draw()
     {
         int width = _map.SizeX;
         int height = _map.SizeY;
+        string output = "";
 
-        Console.Write(Box.TopLeft);
+        output += Box.TopLeft;
 
         for (int x = 0; x < width; x++)
         {
-            Console.Write($"{Box.Horizontal}{(x < width - 1 ? Box.TopMid : "")}");
+            output += $"{Box.Horizontal}{(x < width - 1 ? Box.TopMid : "")}";
         }
 
-        Console.WriteLine(Box.TopRight);
+        output += $"{Box.TopRight}\n";
 
         for (int y = height - 1; y >= 0; y--)
         {
-            Console.Write(Box.Vertical);
+            output += Box.Vertical;
             for (int x = 0; x < width; x++)
             {
                 var mappables = _map.At(new Point(x, y));
@@ -41,20 +40,21 @@ public class MapVisualizer
                     1 => mappables[0].Symbol,
                     _ => 'X'
                 };
-                Console.Write($"{displayChar}{Box.Vertical}");
+                output += $"{displayChar}{Box.Vertical}";
             }
-            Console.WriteLine();
+            output += "\n";
 
             if (y > 0)
             {
-                Console.Write(Box.MidLeft);
-                for (int x = 0; x < width; x++) Console.Write($"{Box.Horizontal}{(x < width - 1 ? Box.Cross : "")}");
-                Console.WriteLine(Box.MidRight);
+                output += Box.MidLeft;
+                for (int x = 0; x < width; x++) output += $"{Box.Horizontal}{(x < width - 1 ? Box.Cross : "")}";
+                output += $"{Box.MidRight}\n";
             }
         }
 
-        Console.Write(Box.BottomLeft);
-        for (int x = 0; x < width; x++) Console.Write($"{Box.Horizontal}{(x < width - 1 ? Box.BottomMid : "")}");
-        Console.WriteLine(Box.BottomRight);
+        output += Box.BottomLeft;
+        for (int x = 0; x < width; x++) output += $"{Box.Horizontal}{(x < width - 1 ? Box.BottomMid : "")}";
+        output += $"{Box.BottomRight}\n";
+        return output;
     }
 }

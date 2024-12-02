@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace Simulator.Maps;
+﻿namespace Simulator.Maps;
 
 public interface IMappable
 {
