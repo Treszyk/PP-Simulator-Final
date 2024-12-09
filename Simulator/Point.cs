@@ -5,7 +5,7 @@ public readonly struct Point
     public Point(int x, int y) => (X, Y) = (x, y);
     public override string ToString() => $"({X}, {Y})";
 
-    public Point Next(Direction direction)
+    public Point Next(Direction direction, int AddiMoves = 0)
     {
         int new_x = X;
         int new_y = Y;
@@ -41,4 +41,5 @@ public readonly struct Point
         }
         return new Point(new_x, new_y);
     }
+    // returns the 'opposite' point from the given direction, basically rotated by 180 degrees
 }

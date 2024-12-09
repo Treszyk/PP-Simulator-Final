@@ -97,6 +97,6 @@ internal class Program
     static void Main(string[] args)
     {
         Console.WriteLine("Starting Simulator!\n");
-
+        Point p1 = new(1, 1);
     }
 }
