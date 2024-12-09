@@ -1,6 +1,6 @@
 ﻿namespace Simulator.Maps;
 
-public abstract class BigMap : SmallMap
+public abstract class BigMap : Map
 {
     private readonly Dictionary<Point, List<IMappable>> _mappablePositions;
     public BigMap(int sizeX, int sizeY) : base(sizeX, sizeY)
