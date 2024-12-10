@@ -1,5 +1,6 @@
 ﻿using Simulator;
 using Simulator.Maps;
+using System.Text.Json.Serialization.Metadata;
 
 namespace SimConsole;
 
@@ -12,19 +13,18 @@ class Program
         List<Point> points = [new(0, 0), new(4, 4), new(1, 1), new(1, 3), new(7, 5)];
         string moves = "ludludulurlrluulddrl";
         Simulation simulation = new(map, mappables, points, moves);
-        MapVisualizer mapVisualizer = new(simulation.Map);
-        Console.WriteLine("SIMULATION!");
-        Console.WriteLine("\nStarting positions:");
+        //Console.WriteLine("SIMULATION!");
+        //Console.WriteLine("\nStarting positions:");
 
-        while (!simulation.Finished)
-        {
-            Console.Write(mapVisualizer.Draw());
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-            simulation.Turn();
-        }
+        SimulationHistory sh = new(simulation);
+        //sh.DisplayTurn(0);
+        sh.DisplayTurn(5);
+        sh.DisplayTurn(10);
+        sh.DisplayTurn(15);
+        sh.DisplayTurn(20);
+        //sh.DisplayHistory();
 
-        Console.Write(mapVisualizer.Draw());
-        Console.WriteLine("End of simulation!");
+        //Console.Write(mapVisualizer.Draw());
+        //Console.WriteLine("End of simulation!");
     }
 }

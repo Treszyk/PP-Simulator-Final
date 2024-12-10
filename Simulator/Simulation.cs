@@ -41,8 +41,8 @@ public class Simulation
     {
         if (Finished)
             throw new InvalidOperationException("Simulation is finished.");
-        Console.WriteLine($"\nTurn {_currentTurnIndex + 1}");
-        Console.WriteLine($"{CurrentMappable} {CurrentMappable.Position} goes {CurrentMoveName}:");
+        //Console.WriteLine($"\nTurn {_currentTurnIndex + 1}");
+        //Console.WriteLine($"{CurrentMappable} {CurrentMappable.Position} goes {CurrentMoveName}:");
         CurrentMappable.Go(_directions[_currentTurnIndex % _directions.Count]);
         
         _currentTurnIndex++;
