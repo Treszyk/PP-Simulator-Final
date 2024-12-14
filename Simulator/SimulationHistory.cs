@@ -22,8 +22,8 @@ public class SimulationHistory
     {
         //first frame
         SimulationTurnLog simulationTurnLog = new() { 
-            Mappable = $"{_simulation.CurrentMappable} {_simulation.CurrentMappable.Position}", 
-            Move = _simulation.CurrentMoveName, 
+            Mappable = $"STARTING POSITIONS", 
+            Move = "", 
             Symbols = GetPositionChars() 
         };
         TurnLogs.Add(simulationTurnLog);

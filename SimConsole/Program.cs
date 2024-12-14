@@ -13,10 +13,13 @@ class Program
         List<Point> points = [new(0, 0), new(4, 4), new(1, 1), new(1, 3), new(7, 5)];
         string moves = "ludludulurlrluulddrl";
         Simulation simulation = new(map, mappables, points, moves);
-        //Console.WriteLine("SIMULATION!");
+        Console.WriteLine("SIMULATION!");
         //Console.WriteLine("\nStarting positions:");
 
         SimulationHistory sh = new(simulation);
+        LogVisualizer lv = new(sh);
+        for (int i = 0; i < sh.TurnLogs.Count; i++)
+            Console.WriteLine($"{i}: {lv.Draw(i)}");
         //sh.DisplayTurn(0);
         
         //sh.DisplayHistory();
