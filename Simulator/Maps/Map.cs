@@ -45,6 +45,7 @@ public abstract class Map
             return;
         if (value.Remove(mappable))
         {
+            Remove(from, mappable);
             Add(to, mappable);
         }
     }
