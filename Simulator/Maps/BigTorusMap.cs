@@ -1,10 +1,8 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿namespace Simulator.Maps;
 
-namespace Simulator.Maps;
-
-public class SmallTorusMap : SmallMap
+public class BigTorusMap : BigMap
 {
-    public SmallTorusMap(int sizeX, int sizeY) : base(sizeX, sizeY) { }
+    public BigTorusMap(int sizeX, int sizeY) : base(sizeX, sizeY) { }
     public override bool Exist(Point p)
     {
         return _mapRect.Contains(p);
