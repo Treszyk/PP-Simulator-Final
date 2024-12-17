@@ -1,0 +1,107 @@
+﻿@page
+@model SimModel
+@{
+    ViewData["Title"] = "Symulacja";
+    int sizeX = Model.SimHistory.SizeX;
+    int sizeY = Model.SimHistory.SizeY;
+}
+<style>
+.map {
+    grid-template-columns: max-content repeat(@sizeX, max-content);
+    grid-template-rows: repeat(@sizeY, 1fr) max-content;
+}
+
+.map {
+    display: grid;
+    gap: 0;
+    justify-content: center;
+    min-width: max-content;
+    align-items: center;
+}
+
+    .map > div {
+        background-color: #54555a;
+        outline: 1px dashed var(--dark-color);
+        min-width: 80px;
+        aspect-ratio: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px black solid;
+    }
+
+    .map > p {
+        padding-right: .4rem;
+    }
+
+    .map > span {
+        padding-top: .2rem;
+    }
+
+
+.map-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-left: 1rem;
+}
+
+.turn {
+    min-width: 11rem;
+}
+
+.alert {
+    color: #ffc86b;
+}
+
+button {
+    min-width: 4rem;
+    min-height: 3rem;
+    font-size: 1.6rem;
+}
+</style>
+<div class="map-header">
+    <form method="post" action="/Sim">
+        @Html.AntiForgeryToken()
+        <button name="action" value="decrease">&larr;</button>
+    <input type="hidden" value="decrease" /></form>
+    <div class="turn">
+        Tura <b>@Model.TurnIndex</b>
+    </div>
+    <form method="post" action="/Sim">
+        @Html.AntiForgeryToken()
+        <button name="action" value="increase">&rarr;</button>
+    <input type="hidden" value="increase" /></form>
+</div>
+
+<div class="map">
+    @for (int y = sizeY - 1; y >= 0; y--)
+    {
+        <p>@y</p> 
+        
+        @for (int x = 0; x < sizeX; x++)
+        {
+            <div data-x="@x" data-y="@y">
+                @{
+                    char symbol = ' ';
+                    bool exists = Model.TurnLog.Symbols.TryGetValue(new Simulator.Point(x,y), out symbol);
+                }
+                @(exists ? symbol : ' ')
+            </div>
+        }
+    }
+    <span></span>
+
+    @for (int x = 0; x < sizeX; x++)
+    {
+        <span>@x</span>
+    }
+</div>
+
+<div class="map-header">
+        <span class="alert">@Model.TurnLog.Mappable @(Model.TurnIndex != 0 ? "goes" : "") @Model.TurnLog.Move</span>
+</div>
