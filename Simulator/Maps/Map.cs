@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Runtime.CompilerServices;
 
 namespace Simulator.Maps;
 
@@ -6,6 +7,7 @@ public abstract class Map
 {
     public int SizeX { get; }
     public int SizeY { get; }
+    public Func<Map, Point, Direction, Point>? FNext, FNextDiagonal;
     protected Rectangle _mapRect;
     public readonly Dictionary<Point, List<IMappable>> MappablePositions;
     public Map(int sizeX, int sizeY)
@@ -17,9 +19,12 @@ public abstract class Map
         _mapRect = new(new Point(0, 0), new Point(SizeX - 1, SizeY - 1));
         MappablePositions = [];
     }
-    public abstract bool Exist(Point p);
-    public abstract Point Next(Point p, Direction d);
-    public abstract Point NextDiagonal(Point p, Direction d);
+    public bool Exist(Point p)
+    {
+        return _mapRect.Contains(p);
+    }
+    public Point Next(Point p, Direction d) => FNext?.Invoke(this, p, d) ?? p;
+    public Point NextDiagonal(Point p, Direction d) => FNextDiagonal?.Invoke(this, p, d) ?? p;
     public void Add(Point position, IMappable mappable)
     {
         if (!Exist(position))

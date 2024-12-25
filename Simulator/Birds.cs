@@ -19,7 +19,7 @@ public class Birds : Animals
             //zrobilem tak ze jezeli są na samej krawędzi to odbijają się o 2 w przeciwną stronę
             //jezeli są o 1 od krawędzi to najpierw idą jedno pole w lewo a potem odbijają się o 1 w prawo
             //czyli ostatecznie w tym przypadku się nie ruszają
-            direction = BigBounceMap.BouncedDirection(direction);
+            direction = MapMovement.BouncedDirection(direction);
         }
         if(CanFly) newPosition = Map.Next(newPosition, direction);
         Map.Move(this, Position, newPosition, direction);
