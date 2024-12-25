@@ -96,7 +96,37 @@ internal class Program
     }
     static void Main(string[] args)
     {
-        Console.WriteLine("Starting Simulator!\n");
-        Point p1 = new(1, 1);
+        List<IMappable> mappables = new List<IMappable>
+        {
+            new Orc("Gorbag") { Level = 3, Rage = 5 },
+            new Elf("Elandor") { Level = 2, Agility = 1 },
+            new Orc("Uruk") { Level = 5, Rage = 8 },
+            new Elf("Lyanna") { Level = 4, Agility = 6 },
+            new Orc("Zugzug") { Level = 2, Rage = 4 },
+            new Elf("Merial") { Level = 1, Agility = 2 },
+            new Orc("Gnarok") { Level = 4, Rage = 6 },
+            new Elf("Tyran") { Level = 3, Agility = 5 },
+            new Orc("Throkk") { Level = 6, Rage = 9 },
+            new Elf("Alarion") { Level = 5, Agility = 7 },
+            new Orc("Bogdar") { Level = 7, Rage = 10 },
+            new Elf("Finariel") { Level = 3, Agility = 4 }
+        };
+        Console.WriteLine("Przed sortowaniem:");
+        foreach (Creature mappable in mappables)
+        {
+            Console.WriteLine($"{mappable} Power: {mappable.Power}");
+        }
+        mappables.Sort((a, b) =>
+        {
+            if (a is Creature aC && b is Creature bC)
+                return aC.Power.CompareTo(bC.Power);
+            return 0;
+        });
+        Console.WriteLine("\nPo sortowaniu:");
+        foreach (Creature mappable in mappables)
+        {
+            Console.WriteLine($"{mappable} Power: {mappable.Power}");
+        }
+
     }
 }
