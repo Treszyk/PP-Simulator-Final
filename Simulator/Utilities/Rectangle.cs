@@ -1,4 +1,4 @@
-﻿namespace Simulator;
+﻿namespace Simulator.Utilities;
 
 public class Rectangle
 {

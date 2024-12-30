@@ -1,4 +1,6 @@
-﻿namespace Simulator;
+﻿using Simulator.Utilities;
+
+namespace Simulator;
 public class SimulationTurnLog
 {
     /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace Simulator;
+﻿using Simulator.Utilities;
+
+namespace Simulator.Entities;
 
 public class Orc : Creature
 {

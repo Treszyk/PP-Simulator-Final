@@ -1,4 +1,6 @@
-﻿using Simulator.Maps;
+﻿using Simulator.Entities;
+using Simulator.Maps;
+using Simulator.Utilities;
 
 namespace Simulator;
 

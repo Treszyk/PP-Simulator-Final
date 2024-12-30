@@ -1,8 +1,10 @@
 ﻿using System.Drawing;
 using System.Runtime.CompilerServices;
+using Simulator.Utilities;
+using Point = Simulator.Utilities.Point;
+using Rectangle = Simulator.Utilities.Rectangle;
 
 namespace Simulator.Maps;
-
 public abstract class Map
 {
     public int SizeX { get; }
@@ -59,4 +61,11 @@ public abstract class Map
         return MappablePositions.TryGetValue(position, out var mappables) ? mappables : ([]);
     }
     public List<IMappable> At(int x, int y) => At(new Point(x, y));
+    public float GetDistance(Point p1, Point p2)
+    {
+        float deltaX = p2.X - p1.X;
+        float deltaY = p2.Y - p1.Y;
+
+        return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
 }

@@ -1,4 +1,4 @@
-﻿namespace Simulator;
+﻿namespace Simulator.Utilities;
 public readonly struct Point
 {
     public readonly int X, Y;
@@ -37,9 +37,18 @@ public readonly struct Point
             case Direction.Down:
                 new_x--; new_y--; break;
             case Direction.Up:
-                new_x++;  new_y++; break;
+                new_x++; new_y++; break;
         }
         return new Point(new_x, new_y);
     }
-    // returns the 'opposite' point from the given direction, basically rotated by 180 degrees
+
+    public static bool operator ==(Point p1, Point p2)
+    {
+        return p1.Equals(p2);
+    }
+
+    public static bool operator !=(Point p1, Point p2)
+    {
+        return !p1.Equals(p2);
+    }
 }

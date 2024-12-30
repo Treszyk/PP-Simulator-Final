@@ -1,4 +1,4 @@
-﻿namespace Simulator;
+﻿namespace Simulator.Utilities;
 
 public static class DirectionParser
 {
@@ -13,7 +13,7 @@ public static class DirectionParser
                 case 'U':
                     directions.Add(Direction.Up); break;
                 case 'R':
-                    directions.Add(Direction.Right); ; break;
+                    directions.Add(Direction.Right); break;
                 case 'D':
                     directions.Add(Direction.Down); break;
                 case 'L':

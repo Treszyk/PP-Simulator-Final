@@ -1,4 +1,6 @@
-﻿namespace Simulator.Maps;
+﻿using Simulator.Utilities;
+
+namespace Simulator.Maps;
 
 internal static class MapMovement
 {

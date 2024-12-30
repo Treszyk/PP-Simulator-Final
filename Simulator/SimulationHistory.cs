@@ -1,5 +1,6 @@
 ﻿using Simulator;
 using Simulator.Maps;
+using Point = Simulator.Utilities.Point;
 
 public class SimulationHistory
 {
@@ -32,18 +33,21 @@ public class SimulationHistory
         {
             IMappable currentMappable = _simulation.CurrentMappable;
             Point currentMappablePosition = currentMappable.Position;
-            string currentMoveName = _simulation.CurrentMoveName;
+            //string currentMoveName = _simulation.CurrentMoveName;
+
+            //Console.WriteLine($"SIM LOG CURR MAPPABLE {currentMappable} PRZED {_simulation.CurrentMappable}");
 
             _simulation.Turn();
 
             simulationTurnLog = new()
             {
                 Mappable = $"{currentMappable} {currentMappablePosition}",
-                Move = currentMoveName,
+                Move = currentMappable.LastMove.ToString().ToLower(),
                 Symbols = GetPositionChars()
             };
 
             TurnLogs.Add(simulationTurnLog);
+            //Console.WriteLine($"SIM LOG CURR MAPPABLE {currentMappable} PO {_simulation.CurrentMappable}");
         }
     }
     private Dictionary<Point, char> GetPositionChars()

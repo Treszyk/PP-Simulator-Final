@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Simulator;
-using System.Diagnostics.Metrics;
 
 namespace SimWeb.Pages;
 
@@ -12,6 +11,7 @@ public class SimModel : PageModel
     public void OnGet()
     {
         TurnIndex = int.TryParse(Request.Cookies["TurnIndex"], out int index) ? index : HttpContext.Session.GetInt32("TurnIndex") ?? 0;
+
     }
 
     public void OnPost()

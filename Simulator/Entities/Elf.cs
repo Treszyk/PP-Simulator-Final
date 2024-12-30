@@ -1,7 +1,9 @@
-﻿namespace Simulator;
+﻿using Simulator.Utilities;
+
+namespace Simulator.Entities;
 
 public class Elf : Creature
-{ 
+{
     private int _agility = 1;
     private int _counter = 0;
     public int Agility
@@ -22,7 +24,7 @@ public class Elf : Creature
     public void Sing()
     {
         _counter++;
-        if (_counter%3==0 && _agility < 10)
+        if (_counter % 3 == 0 && _agility < 10)
         {
             _agility++;
         }

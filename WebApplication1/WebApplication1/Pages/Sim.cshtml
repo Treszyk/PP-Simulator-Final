@@ -88,7 +88,7 @@ button {
             <div data-x="@x" data-y="@y">
                 @{
                     char symbol = ' ';
-                    bool exists = Model.TurnLog.Symbols.TryGetValue(new Simulator.Point(x,y), out symbol);
+                    bool exists = Model.TurnLog.Symbols.TryGetValue(new Simulator.Utilities.Point(x,y), out symbol);
                 }
                 @(exists ? symbol : ' ')
             </div>
