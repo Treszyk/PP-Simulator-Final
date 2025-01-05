@@ -16,6 +16,7 @@ public class Birds : Animals
         Random rand = new Random();
         Direction direction = (Direction)rand.Next(4);
         LastMove = direction;
+        LastAction = Utilities.Action.Go;
 
         Point expectedPosition = !CanFly ? Position.NextDiagonal(direction) : Position.Next(direction);
         Point newPosition = !CanFly ? Map.NextDiagonal(Position, direction) : Map.Next(Position, direction);

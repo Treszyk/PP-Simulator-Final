@@ -10,7 +10,6 @@
     grid-template-columns: max-content repeat(@sizeX, max-content);
     grid-template-rows: repeat(@sizeY, 1fr) max-content;
 }
-
 .map {
     display: grid;
     gap: 0;
@@ -64,44 +63,120 @@ button {
     font-size: 1.6rem;
 }
 </style>
-<div class="map-header">
-    <form method="post" action="/Sim">
-        @Html.AntiForgeryToken()
-        <button name="action" value="decrease">&larr;</button>
-    <input type="hidden" value="decrease" /></form>
-    <div class="turn">
-        Tura <b>@Model.TurnIndex</b>
-    </div>
-    <form method="post" action="/Sim">
-        @Html.AntiForgeryToken()
-        <button name="action" value="increase">&rarr;</button>
-    <input type="hidden" value="increase" /></form>
-</div>
-
-<div class="map">
-    @for (int y = sizeY - 1; y >= 0; y--)
-    {
-        <p>@y</p> 
-        
-        @for (int x = 0; x < sizeX; x++)
-        {
-            <div data-x="@x" data-y="@y">
-                @{
-                    char symbol = ' ';
-                    bool exists = Model.TurnLog.Symbols.TryGetValue(new Simulator.Utilities.Point(x,y), out symbol);
-                }
-                @(exists ? symbol : ' ')
-            </div>
+<div id="sim_container">
+<div id="tile_details_container">
+    <p>@Model.SelectedPoint</p>
+    @if(Model.SelectedPoint != null) {
+        @for(int i=0; i< Model.IMappablesAtTile.Count; i++) {
+            <p>@Model.IMappablesAtTile[i].Health</p>
         }
     }
-    <span></span>
-
-    @for (int x = 0; x < sizeX; x++)
-    {
-        <span>@x</span>
-    }
 </div>
+<div id="map_container">
+    <div class="map-header">
+        <form method="post" action="/Sim">
+            @Html.AntiForgeryToken()
+            <button name="action" value="decrease">&larr;</button>
+        <input type="hidden" value="decrease" /></form>
+        <div class="turn">
+            Tura <b>@Model.TurnIndex</b>
+        </div>
+        <form method="post" action="/Sim">
+            @Html.AntiForgeryToken()
+            <button name="action" value="increase">&rarr;</button>
+        <input type="hidden" value="increase" /></form>
+    </div>
+<form id="tileForm" method="post" asp-page-handler="UpdateTileContext">
+    <input type="hidden" name="x" id="tileX" />
+    <input type="hidden" name="y" id="tileY" />
+    <div class="map">
+        @for (int y = sizeY - 1; y >= 0; y--)
+        {
+            <p>@y</p> 
+        
+            @for (int x = 0; x < sizeX; x++)
+            {
+                <div class="tile" id="tile-@x-@y" data-x="@x" data-y="@y">
+    @using System.IO
 
-<div class="map-header">
-        <span class="alert">@Model.TurnLog.Mappable @(Model.TurnIndex != 0 ? "goes" : "") @Model.TurnLog.Move</span>
+    @inject IWebHostEnvironment Environment
+
+    @{
+        char symbol = ' ';
+        string path = null;
+        bool exists = Model.TurnLog.Symbols.TryGetValue(new Simulator.Utilities.Point(x, y), out symbol);
+
+        if (exists) {
+            string filePath = System.IO.Path.Combine(Environment.WebRootPath, "images", symbol + (symbol == 'B' ? "_fly" : "") + ".png");
+            if (System.IO.File.Exists(filePath)) {
+                path = "/images/" + symbol + (symbol == 'B' ? "_fly" : "") + ".png";
+            }
+        }
+    }
+
+    @if (!string.IsNullOrEmpty(path)) {
+        <img src="@path" />
+    } else if(exists) {
+        @symbol
+    }
+
+                </div>
+            }
+        }
+        <span></span>
+
+        @for (int x = 0; x < sizeX; x++)
+        {
+            <span>@x</span>
+        }
+    </div>
+</form>
+    <div class="map-header">
+            <span class="alert">@Model.TurnLog.Mappable @Model.TurnLog.Move</span>
+    </div>
+</div>
+<div id="chat_container">
+    @for(int i = Model.TurnIndex-1; i>=0 ; i--) {
+        <div class="chat">
+            <p class="header">Tura <span class="alert"><b>@(i+1)</b></span></p>
+            @for (int j = 0; j < Model.AllActionsByTurn[i].Count; j++)
+            {  
+                <p><span class="alert">@Model.AllActionsByTurn[i][j]</span></p>
+            }
+        </div>
+    }
+<script>
+    var selectedX = @(Model.SelectedPoint?.X ?? -1);
+    var selectedY = @(Model.SelectedPoint?.Y ?? -1);
+    console.log(selectedX, selectedY);
+        function highlightSelectedTile() {
+        if (selectedX !== undefined && selectedY !== undefined) {
+            // Get the tile using its coordinates (id is in the format "tile-x-y")
+            var tileId = "tile-" + selectedX + "-" + selectedY;
+            var tile = document.getElementById(tileId);
+
+            if (tile) {
+                // Add the 'selected' class to the tile to change the background color
+                tile.classList.add("selected");
+            } else {
+                console.log("Tile not found");
+            }
+        }
+    }
+highlightSelectedTile();
+    document.querySelectorAll('.tile').forEach(tile => {
+        tile.addEventListener('click', function () {
+            const x = this.getAttribute('data-x');
+            const y = this.getAttribute('data-y');
+            
+            // Set hidden input values
+            document.getElementById('tileX').value = x;
+            document.getElementById('tileY').value = y;
+            
+            // Submit the form
+            document.getElementById('tileForm').submit();
+        });
+    });
+</script>
+</div>
 </div>

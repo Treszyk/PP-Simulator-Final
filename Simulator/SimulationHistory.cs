@@ -1,31 +1,33 @@
 ﻿using Simulator;
 using Simulator.Maps;
 using Point = Simulator.Utilities.Point;
+using Action = Simulator.Utilities.Action;
 
 public class SimulationHistory
 {
+    public static readonly List<List<string>> turnActions = [];
     private Simulation _simulation { get; }
     public int SizeX { get; }
     public int SizeY { get; }
     public List<SimulationTurnLog> TurnLogs { get; } = [];
-    // store starting positions at index 0
-
     public SimulationHistory(Simulation simulation)
     {
         _simulation = simulation ??
             throw new ArgumentNullException(nameof(simulation));
+        turnActions.Clear();
+        //turnActions.Add(["STARTING POSITIONS"]);
         SizeX = _simulation.Map.SizeX;
         SizeY = _simulation.Map.SizeY;
         Run();
     }
-
     private void Run()
     {
         //first frame
         SimulationTurnLog simulationTurnLog = new() { 
             Mappable = $"STARTING POSITIONS", 
             Move = "", 
-            Symbols = GetPositionChars() 
+            Symbols = GetPositionChars(),
+            TileLogs = GetTileLogs()
         };
         TurnLogs.Add(simulationTurnLog);
 
@@ -36,17 +38,23 @@ public class SimulationHistory
             //string currentMoveName = _simulation.CurrentMoveName;
 
             //Console.WriteLine($"SIM LOG CURR MAPPABLE {currentMappable} PRZED {_simulation.CurrentMappable}");
-
+            AddNewActions();
             _simulation.Turn();
-
+            
             simulationTurnLog = new()
             {
                 Mappable = $"{currentMappable} {currentMappablePosition}",
-                Move = currentMappable.LastMove.ToString().ToLower(),
-                Symbols = GetPositionChars()
+                Move =  currentMappable.LastPosition != currentMappable.Position ? " goes " + currentMappable.LastMove.ToString().ToLower() : "",
+                LogInfo = "",
+                Symbols = GetPositionChars(),
+                TileLogs = GetTileLogs()
             };
 
+            if(simulationTurnLog.Move != "")
+                turnActions[^1].Insert(0, simulationTurnLog.Mappable + simulationTurnLog.Move);
+
             TurnLogs.Add(simulationTurnLog);
+            //DisplayActions();
             //Console.WriteLine($"SIM LOG CURR MAPPABLE {currentMappable} PO {_simulation.CurrentMappable}");
         }
     }
@@ -64,5 +72,30 @@ public class SimulationHistory
             };
         }
         return PositionChars;
+    }
+    private Dictionary<Point, List<IMappable>> GetTileLogs()
+    {
+        Dictionary<Point, List<IMappable>> TileLogs = [];
+        foreach (Point point in _simulation.Map.MappablePositions.Keys)
+        {
+            TileLogs.Add(point, new List<IMappable>(_simulation.Map.MappablePositions[point]));
+            Console.WriteLine(_simulation.Map.MappablePositions[point][0]);
+        }
+        return TileLogs;
+    }
+    public static void AddNewActions() => turnActions.Add([]);
+    public static void AddAction(string action) => turnActions[^1].Add(action);
+    public void Display()
+    {
+        int turnNum = 1;
+        foreach(var turn in turnActions)
+        {
+            Console.WriteLine($"\n\nTura: {turnNum++}");
+            foreach (var action in turn)
+            {
+                Console.WriteLine(action);
+            }
+            Console.WriteLine("\n\n");
+        }
     }
 }

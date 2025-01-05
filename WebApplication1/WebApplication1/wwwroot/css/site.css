@@ -15,11 +15,88 @@ main {
     display: flex;
     flex-direction: column;
     font-size: large;
-    align-items: center;
+    align-items: safe center;
     text-align: center;
     overflow: auto;
     justify-content: safe center;
 }
+
+div#sim_container {
+    height: 100%;
+    display: flex;
+    font-size: large;
+    align-items: safe center;
+    text-align: center;
+    justify-content: space-evenly;
+    width: 100%;
+}
+div#map_container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: large;
+    align-items: safe center;
+    text-align: center;
+    justify-content: safe center;
+    width: auto;
+    overflow-y: auto;
+}
+
+div#tile_details_container, div#chat_container {
+    display: flex;
+    flex-direction: column;
+    align-items: safe center;
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 80%;
+    max-width: 25%;
+    min-width: 25%;
+    padding: 10px;
+    gap: 25px;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #ffc86b #34353a;
+}
+
+    /* Chrome, Edge, and Safari */
+    *::-webkit-scrollbar {
+        width: 16px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: #34353a;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: #ffc86b;
+        border-radius: 10px;
+        border: 3px solid #ffffff;
+    }
+div.chat {
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: safe space-between;
+
+    border: 1px solid black;
+}
+div.chat p {
+    margin: 0px;
+    padding: 5px;
+}
+    div.chat p.header {
+        background-color: #3d3e42;
+        margin: 0px;
+        -webkit-box-shadow: 0px 0px 20px -7px rgba(0, 0, 0, 1);
+        -moz-box-shadow: 0px 0px 20px -7px rgba(0, 0, 0, 1);
+        box-shadow: 0px 0px 20px -7px rgba(0, 0, 0, 1);
+    }
 .nav {
     display: flex;
     justify-content: center;
@@ -65,4 +142,13 @@ a:hover {
 a.active {
     color: deepskyblue;
     color: #ffc86b !important;
+}
+.selected {
+    background-color: #ffc86b !important;
+}
+.tile {
+    transition: 0.5s ease-in-out;
+}
+.tile:hover {
+    background-color: #ffc86b !important;
 }

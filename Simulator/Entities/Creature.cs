@@ -1,5 +1,6 @@
 ﻿using Simulator.Maps;
 using Simulator.Utilities;
+using Action = Simulator.Utilities.Action;
 
 namespace Simulator.Entities;
 
@@ -22,10 +23,12 @@ public abstract class Creature : IMappable
     public abstract string Info { get; }
     public Map? Map { get; private set; }
     public Point Position { get; private set; }
+    public Point LastPosition { get; set; }
+    public Action LastAction { get; set; }
     public Direction LastMove { get; set; }
     public bool IsInBattle { get; set; }
     public IMappable? Target { get; set; }
-    public int Health { get; set; } = 10;
+    public int Health { get; set; } = 20;
 
     public Creature() { }
     public Creature(string name, int level = 1)
@@ -47,52 +50,46 @@ public abstract class Creature : IMappable
     public void Upgrade() => _level = _level < 10 ? _level + 1 : _level;
     public void Go()
     {
+        LastPosition = Position;
         if (Map == null)
             throw new InvalidOperationException("Stwór nie jest przypisany do mapy.");
 
         Random rand = new Random();
         Direction direction;
         Point newPosition;
+        if (Target != null && Target.IsDead)
+        {
+            Target = null;
+            IsInBattle = false;
+        }
 
-
-        if (Target == null)
+        if(Target == null)
         {
             direction = (Direction)rand.Next(4);
             newPosition = Map.Next(Position, direction);
             Map.Move(this, Position, newPosition, direction);
+            LastAction = Action.Go;
             LastMove = direction;
             Position = newPosition;
         }
         else if (!IsInBattle)
         {
-
-            Direction[] directions = (Direction[])Enum.GetValues(typeof(Direction));
-            direction = directions[0];
-            float shortestDistance = float.MaxValue;
-
-            foreach (Direction dir in directions)
-            {
-                newPosition = Map.Next(Position, dir);
-                float dist = Map.GetDistance(newPosition, Target.Position);
-
-                if (dist < shortestDistance)
-                {
-                    direction = dir;
-                    shortestDistance = dist;
-                }
-            }
+            direction = GetBestMove();
             newPosition = Map.Next(Position, direction);
             Map.Move(this, Position, newPosition, direction);
+            LastAction = Action.Go;
             LastMove = direction;
             Position = newPosition;
         }
+
+
         if (Position == Target?.Position)
         {
             IsInBattle = true;
             Target.IsInBattle = true;
             Target.Target = this;
+            LastAction = Action.Attack;
             BattleHandler.Battle(this, Target);
-            Console.WriteLine("POWINNA BYC WALKA");
         }
         
 
@@ -106,9 +103,29 @@ public abstract class Creature : IMappable
             Target.Target = null;
             Target = null;
             Map?.Remove(Position, this);
+            
             return true;
         }
         return false;
+    }
+    public Direction GetBestMove()
+    {
+        Direction[] directions = (Direction[])Enum.GetValues(typeof(Direction));
+        Direction direction = directions[0];
+        float shortestDistance = float.MaxValue;
+
+        foreach (Direction dir in directions)
+        {
+            Point newPosition = Map?.Next(Position, dir) ?? Position;
+            float dist = Map?.GetDistance(newPosition, Target?.Position ?? Position) ?? 0;
+
+            if (dist < shortestDistance)
+            {
+                direction = dir;
+                shortestDistance = dist;
+            }
+        }
+        return direction;
     }
     public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
 }
