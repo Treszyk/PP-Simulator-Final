@@ -16,9 +16,10 @@ public class Elf : Creature
         get => 8 * Level + 2 * Agility;
     }
     public override string Info => $"{Name} [{Level}][{Agility}]";
-    public Elf() { }
+    public Elf() { Faction = Faction.Elf; }
     public Elf(string name = "Unknown", int level = 1, int agility = 1) : base(name, level)
     {
+        Faction = Faction.Elf;
         Agility = agility;
     }
     public void Sing()

@@ -2,6 +2,7 @@
 using Simulator.Maps;
 using Point = Simulator.Utilities.Point;
 using Action = Simulator.Utilities.Action;
+using Force.DeepCloner;
 
 public class SimulationHistory
 {
@@ -40,23 +41,33 @@ public class SimulationHistory
             //Console.WriteLine($"SIM LOG CURR MAPPABLE {currentMappable} PRZED {_simulation.CurrentMappable}");
             AddNewActions();
             _simulation.Turn();
-            
+            string MappableMove;
+            if(currentMappable.LastAction == Action.Regen)
+            {
+                MappableMove = $" stands still and regenerates {(int)(0.2*15)} health!";//base health
+            } else
+            {
+                MappableMove = (currentMappable.LastPosition != currentMappable.Position) ? " goes " + currentMappable.LastMove.ToString().ToLower() : " doesn't move!";
+            }
             simulationTurnLog = new()
             {
                 Mappable = $"{currentMappable} {currentMappablePosition}",
-                Move =  currentMappable.LastPosition != currentMappable.Position ? " goes " + currentMappable.LastMove.ToString().ToLower() : "",
+                Move = MappableMove,
                 LogInfo = "",
                 Symbols = GetPositionChars(),
                 TileLogs = GetTileLogs()
             };
 
-            if(simulationTurnLog.Move != "")
+
+            if (simulationTurnLog.Move != "")
                 turnActions[^1].Insert(0, simulationTurnLog.Mappable + simulationTurnLog.Move);
 
             TurnLogs.Add(simulationTurnLog);
             //DisplayActions();
             //Console.WriteLine($"SIM LOG CURR MAPPABLE {currentMappable} PO {_simulation.CurrentMappable}");
         }
+        if(_simulation.Winner != null)
+            AddAction($"And with that the {_simulation.Winner} faction wins!");
     }
     private Dictionary<Point, char> GetPositionChars()
     {
@@ -78,8 +89,8 @@ public class SimulationHistory
         Dictionary<Point, List<IMappable>> TileLogs = [];
         foreach (Point point in _simulation.Map.MappablePositions.Keys)
         {
-            TileLogs.Add(point, new List<IMappable>(_simulation.Map.MappablePositions[point]));
-            Console.WriteLine(_simulation.Map.MappablePositions[point][0]);
+            TileLogs.Add(point, new List<IMappable>(_simulation.Map.MappablePositions[point]).DeepClone());
+            //Console.WriteLine(_simulation.Map.MappablePositions[point][0]);
         }
         return TileLogs;
     }

@@ -1,4 +1,5 @@
-﻿using Simulator.Maps;
+﻿using Force.DeepCloner;
+using Simulator.Maps;
 using Simulator.Utilities;
 using Action = Simulator.Utilities.Action;
 
@@ -7,6 +8,7 @@ namespace Simulator.Entities;
 public abstract class Creature : IMappable
 {
     private string _name = "Unknown";
+    public Faction Faction { get; init; }
     private int _level = 1;
     public string Name
     {
@@ -53,7 +55,6 @@ public abstract class Creature : IMappable
         LastPosition = Position;
         if (Map == null)
             throw new InvalidOperationException("Stwór nie jest przypisany do mapy.");
-
         Random rand = new Random();
         Direction direction;
         Point newPosition;
@@ -63,7 +64,11 @@ public abstract class Creature : IMappable
             IsInBattle = false;
         }
 
-        if(Target == null)
+        if(Target == null && Health <= 0.7*15)//base health zamiast 15
+        {
+            LastAction = Action.Regen;
+            Health += (int)(0.2 * 15);//tutaj dac * BaseHealth
+        } else if(Target == null)
         {
             direction = (Direction)rand.Next(4);
             newPosition = Map.Next(Position, direction);
@@ -80,9 +85,10 @@ public abstract class Creature : IMappable
             LastAction = Action.Go;
             LastMove = direction;
             Position = newPosition;
+        } else if(IsInBattle)
+        {
+            SimulationHistory.AddAction($"{this} is stuck in battle!");
         }
-
-
         if (Position == Target?.Position)
         {
             IsInBattle = true;
@@ -91,7 +97,6 @@ public abstract class Creature : IMappable
             LastAction = Action.Attack;
             BattleHandler.Battle(this, Target);
         }
-        
 
     }
     public bool TakeDamage(int damage)
@@ -99,7 +104,7 @@ public abstract class Creature : IMappable
         Health -= damage;
         if (IsDead)
         {
-            Console.WriteLine($"{this} PRZEGRYWA");
+            //Console.WriteLine($"{this} PRZEGRYWA");
             Target.Target = null;
             Target = null;
             Map?.Remove(Position, this);
@@ -128,4 +133,9 @@ public abstract class Creature : IMappable
         return direction;
     }
     public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
+
+    public IMappable Clone()
+    {
+        return this.DeepClone(); // Use Force.DeepCloner here
+    }
 }

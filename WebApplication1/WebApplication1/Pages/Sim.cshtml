@@ -17,7 +17,6 @@
     min-width: max-content;
     align-items: center;
 }
-
     .map > div {
         background-color: #54555a;
         outline: 1px dashed var(--dark-color);
@@ -40,6 +39,7 @@
 
 .map-header {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 1rem;
@@ -48,7 +48,23 @@
     font-size: 1.2rem;
     margin-left: 1rem;
 }
-
+.turn-toggler {
+    display: flex;
+        justify-content: center;
+        align-items: center;
+}
+div#map_container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: large;
+    align-items: safe center;
+    text-align: center;
+    justify-content: safe center;
+    width: auto;
+    max-width: 50%;
+    overflow-y: auto;
+}
 .turn {
     min-width: 11rem;
 }
@@ -62,29 +78,87 @@ button {
     min-height: 3rem;
     font-size: 1.6rem;
 }
+form#tileForm {
+overflow: auto;
+max-width: 100%;
+}
 </style>
 <div id="sim_container">
 <div id="tile_details_container">
-    <p>@Model.SelectedPoint</p>
-    @if(Model.SelectedPoint != null) {
+<div class="details">
+    <p class="header">
+        @if (Model.SelectedPoint != null)
+        {
+            <span>Entities on tile <span class="alert">@Model.SelectedPoint</span></span>
+        }
+        else
+        {
+            <span>No tile selected</span>
+        }
+    </p>
+    @if(Model.IMappablesAtTile.Count == 0 && Model.SelectedPoint != null) {
+         <p style="border-bottom: 3px solid #3d3e42;">No entities to show</p>  
+    } else if(Model.SelectedPoint != null) {
         @for(int i=0; i< Model.IMappablesAtTile.Count; i++) {
-            <p>@Model.IMappablesAtTile[i].Health</p>
+
+        char symbolPrimary = @Model.IMappablesAtTile[i].Symbol;
+        char symbolTarget = @Model.IMappablesAtTile[i].Target?.Symbol ?? ' ';
+        string pathPrimary = System.IO.Path.Combine(Environment.WebRootPath, "images", symbolPrimary + (symbolPrimary == 'B' ? "_fly" : "") + ".png");
+        string pathTarget = System.IO.Path.Combine(Environment.WebRootPath, "images", symbolTarget + (symbolTarget == 'B' ? "_fly" : "") + ".png");
+        
+        //string filePathPrimary = System.IO.Path.Combine(Environment.WebRootPath, "images", symbolPrimary + (symbolPrimary == 'B' ? "_fly" : "") + ".png");
+        //string filePathTarget = System.IO.Path.Combine(Environment.WebRootPath, "images", symbolTarget + (symbolTarget == 'B' ? "_fly" : "") + ".png");
+        if (System.IO.File.Exists(pathPrimary)) {
+            pathPrimary = "/images/" + symbolPrimary + (symbolPrimary == 'B' ? "_fly" : "") + ".png";
+        }
+        if (System.IO.File.Exists(pathTarget)) {
+            pathTarget = "/images/" + symbolTarget + (symbolTarget == 'B' ? "_fly" : "") + ".png";
+        }
+
+
+    if (!string.IsNullOrEmpty(pathPrimary)) {
+        <div class="detail">
+            <img src="@pathPrimary" /> 
+            <div class="stats">
+                <span class="alert">@Model.IMappablesAtTile[i]</span>
+                <span>
+                    HP: <span class="alert">@Model.IMappablesAtTile[i].Health</span>
+                </span>
+                <span>
+                    ATK: <span class="alert">@Model.IMappablesAtTile[i].Power</span>
+                </span>
+            </div>
+            <div class="targetInfo">
+            @if(!string.IsNullOrEmpty(pathTarget) && @Model.IMappablesAtTile[i].Target != null) {
+                <span>Target:</span>
+                <img src="@pathTarget" title="@Model.IMappablesAtTile[i].Target at @Model.IMappablesAtTile[i].Target.Position"/> 
+            } else {
+                <span>No target</span>  
+            }
+            </div>
+        </div>
+    } else {
+        @symbolPrimary
+    }
         }
     }
 </div>
+</div>
 <div id="map_container">
     <div class="map-header">
-        <form method="post" action="/Sim">
-            @Html.AntiForgeryToken()
-            <button name="action" value="decrease">&larr;</button>
-        <input type="hidden" value="decrease" /></form>
-        <div class="turn">
-            Tura <b>@Model.TurnIndex</b>
+        <div class="turn-toggler">
+            <form method="post" action="/Sim">
+                @Html.AntiForgeryToken()
+                <button name="action" value="decrease">&larr;</button>
+            <input type="hidden" value="decrease" /></form>
+            <div class="turn">
+                Tura <b>@Model.TurnIndex</b>
+            </div>
+            <form method="post" action="/Sim">
+                @Html.AntiForgeryToken()
+                <button name="action" value="increase">&rarr;</button>
+            <input type="hidden" value="increase" /></form>
         </div>
-        <form method="post" action="/Sim">
-            @Html.AntiForgeryToken()
-            <button name="action" value="increase">&rarr;</button>
-        <input type="hidden" value="increase" /></form>
     </div>
 <form id="tileForm" method="post" asp-page-handler="UpdateTileContext">
     <input type="hidden" name="x" id="tileX" />
@@ -132,11 +206,16 @@ button {
     </div>
 </form>
     <div class="map-header">
-            <span class="alert">@Model.TurnLog.Mappable @Model.TurnLog.Move</span>
+            <span>Turn of <span class="alert">@Model.TurnLog.Mappable</span></span>
+                @if(@Model.TurnIndex == @Model.SimHistory.TurnLogs.Count - 1) {
+                    <span class="alert" style="font-size: large;">@Model.SimInstance.Winner faction wins!</span>
+                }
+            
+
     </div>
 </div>
 <div id="chat_container">
-    @for(int i = Model.TurnIndex-1; i>=0 ; i--) {
+    @for(int i = Model.TurnIndex-1; i>=0; i--) {
         <div class="chat">
             <p class="header">Tura <span class="alert"><b>@(i+1)</b></span></p>
             @for (int j = 0; j < Model.AllActionsByTurn[i].Count; j++)
@@ -158,6 +237,11 @@ button {
             if (tile) {
                 // Add the 'selected' class to the tile to change the background color
                 tile.classList.add("selected");
+                tile.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center'
+        });
             } else {
                 console.log("Tile not found");
             }

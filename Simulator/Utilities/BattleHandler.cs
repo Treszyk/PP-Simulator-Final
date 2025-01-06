@@ -5,30 +5,37 @@ namespace Simulator.Utilities;
 
 public static class BattleHandler
 {
-    public static void Attack(Creature cr, Creature cr2)
+    public static void Attack(IMappable im, IMappable im2)
     {
-        SimulationHistory.AddAction($"{cr} atakuje {cr2} za {cr.Power}");
-        if (!cr2.TakeDamage(cr.Power))
+        SimulationHistory.AddAction($"{im} attacks {im2} for {im.Power} hp");
+        if (!im2.TakeDamage(im.Power))
         {
-            SimulationHistory.AddAction($"{cr2} atakuje {cr} za {cr2.Power}");
-            if (cr.TakeDamage(cr2.Power))
-                SimulationHistory.AddAction($"{cr} został pokonany przez {cr2}!");
+            SimulationHistory.AddAction($"{im2} attacks {im} for {im2.Power} hp");
+            if (im.TakeDamage(im2.Power))
+            {
+                SimulationHistory.AddAction($"{im} was defeated by {im2}!");
+                im2.IsInBattle = false;
+            }
+                
         }
         else
         {
-            SimulationHistory.AddAction($"{cr2} został pokonany przez {cr}!");
+            SimulationHistory.AddAction($"{im2} was defeated by {im}!");
+            im.IsInBattle = false;
         }
     }
-    public static void Battle(Creature cr, IMappable mp)
+    public static void Battle(IMappable mp1, IMappable mp2)
     {
-        if (mp is Creature cr2)
-        {
             int whoFirst = Random.Shared.Next(0, 100);
-            SimulationHistory.AddAction($"Wartość whoFirst = {whoFirst}");
-            if (whoFirst < 50)
-                Attack(cr, cr2);
-            else
-                Attack(cr2, cr);
-        }
+            
+            if (whoFirst >= 50)
+            {
+                SimulationHistory.AddAction($"{mp1} rolls {whoFirst} and attacks first!");
+                Attack(mp1, mp2);
+            } else
+            {
+                SimulationHistory.AddAction($"{mp1} rolls {whoFirst}, {mp2} attacks first!");
+                Attack(mp2, mp1);
+            }            
     }
 }

@@ -1,5 +1,7 @@
-﻿using Simulator.Maps;
+﻿using Force.DeepCloner;
+using Simulator.Maps;
 using Simulator.Utilities;
+using System.Drawing;
 using Action = Simulator.Utilities.Action;
 using Point = Simulator.Utilities.Point;
 namespace Simulator.Entities;
@@ -7,6 +9,7 @@ namespace Simulator.Entities;
 public class Animals : IMappable
 {
     private string _description = "Unknown";
+    public Faction Faction { get; } = Faction.Animal;
     public virtual char Symbol => char.ToUpper(GetType().Name[0]);
     public required string Description
     {
@@ -26,6 +29,8 @@ public class Animals : IMappable
     public IMappable? Target { get; set; }
     public int Health { get; set; } = 10;
 
+    public int Power => 2 * (int)Size;
+
     public virtual void Go()
     {
         LastPosition = Position;
@@ -33,13 +38,45 @@ public class Animals : IMappable
             throw new InvalidOperationException("Stwór nie jest przypisany do mapy.");
 
         Random rand = new Random();
-        Direction direction = (Direction)rand.Next(4);
+        Direction direction;
         LastAction = Action.Go;
-        
-        Point newPosition = Map.Next(Position, direction);
-        Map.Move(this, Position, newPosition, direction);
-        LastMove = direction;
-        Position = newPosition;
+        Point newPosition;
+        if (Target != null && Target.IsDead)
+        {
+            Target = null;
+            IsInBattle = false;
+        }
+
+        if (Target == null)
+        {
+            direction = (Direction)rand.Next(4);
+            newPosition = Map.Next(Position, direction);
+            Map.Move(this, Position, newPosition, direction);
+            LastAction = Action.Go;
+            LastMove = direction;
+            Position = newPosition;
+        }
+        else if (!IsInBattle)
+        {
+            direction = (Direction)rand.Next(4);
+            newPosition = Map.Next(Position, direction);
+            Map.Move(this, Position, newPosition, direction);
+            LastAction = Action.Go;
+            LastMove = direction;
+            Position = newPosition;
+        }
+        else if (IsInBattle)
+        {
+            SimulationHistory.AddAction($"{this} is stuck in battle!");
+        }
+        if (Position == Target?.Position)
+        {
+            IsInBattle = true;
+            Target.IsInBattle = true;
+            Target.Target = this;
+            LastAction = Action.Attack;
+            BattleHandler.Battle(this, Target);
+        }
     }
     public void InitMapAndPosition(Map map, Point position)
     {
@@ -51,4 +88,31 @@ public class Animals : IMappable
         Position = position;
     }
     public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
+    public IMappable Clone()
+    {
+        return this.DeepClone(); // Use Force.DeepCloner here
+    }
+
+    public bool TakeDamage(int damage)
+    {
+        Health -= damage;
+        if (IsDead)
+        {
+            Size--;
+            //Console.WriteLine($"{this} PRZEGRYWA");
+            Target.Target = null;
+            Target = null;
+            IsInBattle = false;
+            if(Size == 0)
+            {
+                Map?.Remove(Position, this);
+            } else
+            {
+                Health = 10;
+            }
+             // tutaj dac base health
+            return true;
+        }
+        return false;
+    }
 }

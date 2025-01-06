@@ -13,9 +13,10 @@ public class Orc : Creature
     }
     public override int Power => 7 * Level + 3 * Rage;
     public override string Info => $"{Name} [{Level}][{Rage}]";
-    public Orc() { }
+    public Orc() { Faction = Faction.Orc; }
     public Orc(string name = "Unknown", int level = 1, int rage = 1) : base(name, level)
     {
+        Faction = Faction.Orc;
         Rage = rage;
     }
     public void Hunt()

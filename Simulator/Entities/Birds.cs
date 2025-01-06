@@ -12,7 +12,7 @@ public class Birds : Animals
     {
         if (Map == null)
             throw new InvalidOperationException("Stwór nie jest przypisany do mapy.");
-
+        LastPosition = Position;
         Random rand = new Random();
         Direction direction = (Direction)rand.Next(4);
         LastMove = direction;
@@ -27,5 +27,6 @@ public class Birds : Animals
         if (CanFly) newPosition = Map.Next(newPosition, direction);
         Map.Move(this, Position, newPosition, direction);
         Position = newPosition;
+        Console.WriteLine($"{direction} {this} {LastPosition} {Position} {newPosition}");
     }
 }

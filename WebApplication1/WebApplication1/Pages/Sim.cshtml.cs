@@ -7,6 +7,7 @@ namespace SimWeb.Pages;
 
 public class SimModel : PageModel
 {
+    public Simulation SimInstance = SimContext.SimInstance;
     public SimulationHistory SimHistory = SimContext.SimHistoryInstance;
     public int TurnIndex { get; set; } = 0;
     public SimulationTurnLog TurnLog => SimHistory.TurnLogs[TurnIndex];
@@ -16,13 +17,19 @@ public class SimModel : PageModel
         (SelectedPoint!=null && TurnLog.TileLogs.ContainsKey((Point)SelectedPoint)) ? TurnLog.TileLogs[(Point)SelectedPoint] : [];
     public void OnGet()
     {
-        TurnIndex = int.TryParse(Request.Cookies["TurnIndex"], out int index) ? index : HttpContext.Session.GetInt32("TurnIndex") ?? 0;
+        TurnIndex = Math.Clamp(int.TryParse(Request.Cookies["TurnIndex"], out int index) ? index : HttpContext.Session.GetInt32("TurnIndex") ?? 0, 0, SimHistory.TurnLogs.Count - 1);
     }
 
     public void OnPost()
     {
         var action = Request.Form["action"];
         TurnIndex = int.TryParse(Request.Cookies["TurnIndex"], out int index) ? index : HttpContext.Session.GetInt32("TurnIndex") ?? 0;
+        int? selectX = HttpContext.Session.GetInt32("cordX");
+        int? selectY = HttpContext.Session.GetInt32("cordY");
+        if (selectX != null && selectY != null)
+        {
+            SelectedPoint = new Point((int)selectX, (int)selectY);
+        }
         if (action == "increase")
         {
             TurnIndex++;
@@ -39,12 +46,22 @@ public class SimModel : PageModel
     }
     public void OnPostUpdateTileContext(int x, int y)
     {
-        //dodac do turnLog pole z historycznymi mapami tile ale tylko nie puste trzymac w pamieci
-        Console.WriteLine($"Handler invoked with x={x}, y={y}");
-        SelectedPoint = new Point(x, y);
-        // Process tile coordinates (x, y) and update context
-        string TileInfo = $"You clicked on tile (, )"; // Example context info
-        TurnIndex = int.TryParse(Request.Cookies["TurnIndex"], out int index) ? index : HttpContext.Session.GetInt32("TurnIndex") ?? 0;
+        TurnIndex = Math.Clamp(int.TryParse(Request.Cookies["TurnIndex"], out int index) ? index : HttpContext.Session.GetInt32("TurnIndex") ?? 0, 0, SimHistory.TurnLogs.Count - 1);
+        int? selectX = HttpContext.Session.GetInt32("cordX");
+        int? selectY = HttpContext.Session.GetInt32("cordY");
+        Point newPoint = new Point(x, y);
+        if(selectX == x && selectY == y)
+        {
+            Console.WriteLine("aha");
+            SelectedPoint = null;
+            HttpContext.Session.Remove("cordX"); //moze zapisywac select w sesji?
+            HttpContext.Session.Remove("cordY");
+            return;
+        }
+        SelectedPoint = newPoint;
+        HttpContext.Session.SetInt32("cordX", x); //moze zapisywac select w sesji?
+        HttpContext.Session.SetInt32("cordY", y);
+        
     }
     public IActionResult OnGetTestHandler()
     {
