@@ -18,9 +18,11 @@ public interface IMappable
     public Action LastAction { get; protected set; }
     public Direction LastMove { get; protected set; }
     int Power { get; }
+    int BaseHealth { get; }
 
     void Go();
     void InitMapAndPosition(Map map, Point position);
     public string ToString();
     IMappable Clone();
+    void LevelUp();
 }

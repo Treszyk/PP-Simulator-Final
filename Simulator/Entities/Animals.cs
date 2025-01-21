@@ -27,8 +27,8 @@ public class Animals : IMappable
     public Direction LastMove { get; set; }
     public string? LogInfo { get; set; }
     public IMappable? Target { get; set; }
-    public int Health { get; set; } = 10;
-
+    public int Health { get; set; } = (int)(10 + 3 * 1.5);
+    public int BaseHealth => (int)(10 + 1.5 * Size);
     public int Power => 2 * (int)Size;
 
     public virtual void Go()
@@ -47,16 +47,7 @@ public class Animals : IMappable
             IsInBattle = false;
         }
 
-        if (Target == null)
-        {
-            direction = (Direction)rand.Next(4);
-            newPosition = Map.Next(Position, direction);
-            Map.Move(this, Position, newPosition, direction);
-            LastAction = Action.Go;
-            LastMove = direction;
-            Position = newPosition;
-        }
-        else if (!IsInBattle)
+        if (Target == null || !IsInBattle)
         {
             direction = (Direction)rand.Next(4);
             newPosition = Map.Next(Position, direction);
@@ -90,7 +81,7 @@ public class Animals : IMappable
     public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
     public IMappable Clone()
     {
-        return this.DeepClone(); // Use Force.DeepCloner here
+        return this.DeepClone();
     }
 
     public bool TakeDamage(int damage)
@@ -99,7 +90,6 @@ public class Animals : IMappable
         if (IsDead)
         {
             Size--;
-            //Console.WriteLine($"{this} PRZEGRYWA");
             Target.Target = null;
             Target = null;
             IsInBattle = false;
@@ -108,11 +98,16 @@ public class Animals : IMappable
                 Map?.Remove(Position, this);
             } else
             {
-                Health = 10;
+                Health = (int)(10 + Size*1.5);
             }
-             // tutaj dac base health
             return true;
         }
         return false;
+    }
+
+    public void LevelUp()
+    {
+        Size += 1;
+        Health = BaseHealth;
     }
 }

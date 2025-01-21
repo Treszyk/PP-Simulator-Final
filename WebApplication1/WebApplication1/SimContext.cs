@@ -11,9 +11,9 @@ public static class SimContext
     public static readonly List<List<string>> AllActionsByTurn = SimulationHistory.turnActions;
     static SimContext()
     {
-        BigBounceMap map = new(8, 6);
+        BigTorusMap map = new(8, 6);
         List<IMappable> mappables = [new Orc("Gorbag") { Level = 2 }, new Orc("Gorbag2"), new Orc("Gorbag3"), new Orc("Gorbag4"),
-                                     new Elf("Elandor") { Level = 2 }, new Elf("Elandor2") { Level = 1 }, new Elf("Elandor3") { Level = 1 }, new Elf("Elandor4") { Level = 1 }, new Rabbit() { Description = "Króliki" }, new Birds() { Description = "Orły", CanFly = true }, new Birds() { Description = "Strusie", CanFly = false }];
+                                     new Elf("Elandor") { Level = 2 }, new Elf("Elandor2") { Level = 1 }, new Elf("Elandor3") { Level = 1 }, new Elf("Elandor4") { Level = 1 }, new Rabbit() { Description = "Króliki", Size = 5}, new Birds() { Description = "Orły", CanFly = true }, new Birds() { Description = "Strusie", CanFly = false }];
         //if (mappables[2] is Creature cr)
         //{
         //    cr.Target = mappables[1];

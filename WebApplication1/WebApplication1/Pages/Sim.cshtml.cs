@@ -37,6 +37,9 @@ public class SimModel : PageModel
         else if (action == "decrease")
         {
             TurnIndex--;
+        } else if(int.TryParse(action, out int n))
+        {
+            TurnIndex = n;
         }
         
         TurnIndex = Math.Clamp(TurnIndex, 0, SimHistory.TurnLogs.Count - 1);
@@ -54,14 +57,17 @@ public class SimModel : PageModel
         {
             Console.WriteLine("aha");
             SelectedPoint = null;
-            HttpContext.Session.Remove("cordX"); //moze zapisywac select w sesji?
+            HttpContext.Session.Remove("cordX");
             HttpContext.Session.Remove("cordY");
             return;
         }
         SelectedPoint = newPoint;
-        HttpContext.Session.SetInt32("cordX", x); //moze zapisywac select w sesji?
+        HttpContext.Session.SetInt32("cordX", x); 
         HttpContext.Session.SetInt32("cordY", y);
-        
+    }
+    public void OnPostSpecificTurnChosen(int turn)
+    {
+
     }
     public IActionResult OnGetTestHandler()
     {

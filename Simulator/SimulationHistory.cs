@@ -44,7 +44,7 @@ public class SimulationHistory
             string MappableMove;
             if(currentMappable.LastAction == Action.Regen)
             {
-                MappableMove = $" stands still and regenerates {(int)(0.2*15)} health!";//base health
+                MappableMove = $" stands still and regenerates {(int)(0.2*currentMappable.BaseHealth)} health!";//base health
             } else
             {
                 MappableMove = (currentMappable.LastPosition != currentMappable.Position) ? " goes " + currentMappable.LastMove.ToString().ToLower() : " doesn't move!";

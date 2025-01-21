@@ -15,13 +15,14 @@ public static class BattleHandler
             {
                 SimulationHistory.AddAction($"{im} was defeated by {im2}!");
                 im2.IsInBattle = false;
+                im2.LevelUp();
             }
-                
         }
         else
         {
             SimulationHistory.AddAction($"{im2} was defeated by {im}!");
             im.IsInBattle = false;
+            im.LevelUp();
         }
     }
     public static void Battle(IMappable mp1, IMappable mp2)

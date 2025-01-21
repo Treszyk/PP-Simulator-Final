@@ -18,7 +18,7 @@ public abstract class Creature : IMappable
     public int Level
     {
         get => _level;
-        init => _level = Validator.Limiter(value, 1, 10);
+        set => _level = Validator.Limiter(value, 1, 10);
     }
     public bool IsDead => Health <= 0;
     public abstract int Power { get; }
@@ -31,6 +31,7 @@ public abstract class Creature : IMappable
     public bool IsInBattle { get; set; }
     public IMappable? Target { get; set; }
     public int Health { get; set; } = 20;
+    public int BaseHealth => (int)(20 + 1.5 * Level);
 
     public Creature() { }
     public Creature(string name, int level = 1)
@@ -49,6 +50,11 @@ public abstract class Creature : IMappable
         //Console.WriteLine("map assigned");
     }
     public abstract string Greeting();
+    public void LevelUp()
+    {
+        Level += 1;
+        Health = Math.Clamp(Health + (int)(0.25 * BaseHealth),0,BaseHealth);
+    }
     public void Upgrade() => _level = _level < 10 ? _level + 1 : _level;
     public void Go()
     {
@@ -64,10 +70,10 @@ public abstract class Creature : IMappable
             IsInBattle = false;
         }
 
-        if(Target == null && Health <= 0.7*15)//base health zamiast 15
+        if((Target == null && Health <= 0.75*BaseHealth) || Health <= 0.45*BaseHealth)
         {
             LastAction = Action.Regen;
-            Health += (int)(0.2 * 15);//tutaj dac * BaseHealth
+            Health += Math.Clamp((int)(0.2 * BaseHealth), 0, BaseHealth);
         } else if(Target == null)
         {
             direction = (Direction)rand.Next(4);

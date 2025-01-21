@@ -78,6 +78,14 @@ button {
     min-height: 3rem;
     font-size: 1.6rem;
 }
+#turn-chooser button {
+    min-width: 4rem;
+    min-height: 0.5rem;
+font-size: 0.8rem;
+}
+#turn-chooser {
+margin-top: 10px;
+}
 form#tileForm {
 overflow: auto;
 max-width: 100%;
@@ -152,12 +160,21 @@ max-width: 100%;
                 <button name="action" value="decrease">&larr;</button>
             <input type="hidden" value="decrease" /></form>
             <div class="turn">
-                Tura <b>@Model.TurnIndex</b>
+                Tura <b>@Model.TurnIndex / @(Model.SimHistory.TurnLogs.Count-1)</b>
             </div>
             <form method="post" action="/Sim">
                 @Html.AntiForgeryToken()
                 <button name="action" value="increase">&rarr;</button>
             <input type="hidden" value="increase" /></form>
+        </div>
+        <div id="turn-chooser">
+            <form method="post" action="/Sim">
+                @Html.AntiForgeryToken()
+                @for(int i=25; i<= @Model.SimHistory.TurnLogs.Count - 1; i+=25){
+                    <button name="action" value="@i">@i</button>
+                }
+                
+            </form>
         </div>
     </div>
 <form id="tileForm" method="post" asp-page-handler="UpdateTileContext">
@@ -228,7 +245,7 @@ max-width: 100%;
     var selectedX = @(Model.SelectedPoint?.X ?? -1);
     var selectedY = @(Model.SelectedPoint?.Y ?? -1);
     console.log(selectedX, selectedY);
-        function highlightSelectedTile() {
+    function highlightSelectedTile() {
         if (selectedX !== undefined && selectedY !== undefined) {
             // Get the tile using its coordinates (id is in the format "tile-x-y")
             var tileId = "tile-" + selectedX + "-" + selectedY;

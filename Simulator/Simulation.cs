@@ -85,7 +85,7 @@ public class Simulation
         }
         CurrentMappableIndex = Utils.UpdateIndexValue(CurrentMappableIndex, Mappables.Count);
         //Console.WriteLine($"INDEKS: {_currentTurnIndex % Mappables.Count} {CurrentMappable} {_currentTurnIndex}");
-        if ((_currentTurnIndex+1) % 5 == 0)
+        if ((_currentTurnIndex+1) % 3 == 0)
         {
             int attackWho = Random.Shared.Next(0, 100);
             if(attackWho < 50 && _currentTurnIndex > 80)
